@@ -4,25 +4,25 @@ using System.Collections.Generic;
 using System.Collections;
 
 [System.Serializable]
+public class RBPaletteColor
+{
+    public Color Color;
+    public string Name;
+
+    public RBPaletteColor(Color color, string name)
+    {
+        this.Color = color;
+        this.Name = name;
+    }
+}
+
+[System.Serializable]
 public class RBPalette
 {
 	public string PaletteName;
 	[SerializeField]
 	List<RBPaletteColor> ColorsInPalette;
 	string defaultColorName = "Color";
-
-	[System.Serializable]
-	class RBPaletteColor
-	{
-		public Color Color;
-		public string Name;
-
-		public RBPaletteColor (Color color, string name)
-		{
-			this.Color = color;
-			this.Name = name;
-		}
-	}
 
 	public Color this [int index] {
 		get {

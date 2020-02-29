@@ -56,15 +56,22 @@ namespace RedBlueTools
 				basePalette = RBPalette.CreatePaletteFromTexture (sourceTexture);
 			} else {
 				RBPaletteDiff diff = suppliedPaletteGroup.DiffWithTexture (sourceTexture);
-				if (diff.NumChanges > 0) {
-					if (!EditorUtility.DisplayDialog ("Palettes Differ", 
-						"Current BasePalette is different from the one that would generate from this texture. " +
-						"Are you sure you want to sync this PaletteGroup to this texture?", "OK", "Cancel")) {
-						return false;
-					}
-				}
-				suppliedPaletteGroup.ApplyDiff (diff);
-				basePalette = suppliedPaletteGroup.BasePalette;
+                if (diff.NumChanges > 0)
+                {
+                    var result = EditorUtility.DisplayDialogComplex("Palettes Differ",
+                        $"Current BasePalette is different from the one that would generate from this texture. {diff.Insertions.Count} colors added  and {diff.Deletions.Count} removed." +
+                        "Are you sure you want to sync this PaletteGroup to this texture?", "Yes", "No", "Cancel");
+                    if (result == 0)
+                    {
+                        suppliedPaletteGroup.ApplyDiff(diff);
+                    }
+                    else if (result == 2)
+                    {
+                        return false;
+                    }
+                    //suppliedPaletteGroup.ApplyDiff (diff);
+                }
+                basePalette = suppliedPaletteGroup.BasePalette;
 			}
 
 			// Create the palette map from the palette key
@@ -162,15 +169,20 @@ namespace RedBlueTools
 				if(textureImporter == null) {
 					throw new System.NullReferenceException ("Failed to import file at specified path: " + fullPath);
 				}
-				textureImporter.textureType = TextureImporterType.Advanced;
+                var platformSettings = textureImporter.GetDefaultPlatformTextureSettings();
+                platformSettings.resizeAlgorithm = TextureResizeAlgorithm.Bilinear;
+                platformSettings.format = TextureImporterFormat.Alpha8;
+                textureImporter.SetPlatformTextureSettings(platformSettings);
+
+                textureImporter.textureType = TextureImporterType.Default;
 				textureImporter.npotScale = TextureImporterNPOTScale.None;
 				textureImporter.alphaIsTransparency = false;
 				textureImporter.mipmapEnabled = false;
 				textureImporter.filterMode = FilterMode.Point;
-				textureImporter.textureFormat = TextureImporterFormat.Alpha8;
-			
-				// Force Unity to see the file and use the new import settings
-				AssetDatabase.ImportAsset (fullPath);
+                //textureImporter.textureFormat = TextureImporterFormat.Alpha8;
+
+                // Force Unity to see the file and use the new import settings
+                AssetDatabase.ImportAsset (fullPath);
 			}
 		}
 	}

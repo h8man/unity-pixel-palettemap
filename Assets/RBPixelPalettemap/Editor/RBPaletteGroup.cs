@@ -11,11 +11,9 @@ public class RBPaletteGroup : ScriptableObject
 	public string GroupName;
 	public bool Locked = true;
 	[SerializeField]
-	List<RBPalette>
-		palettes;
+	List<RBPalette> palettes;
 	[SerializeField]
-	List<Color>
-		colors;
+	List<Color> colors;
 
 	public RBPalette BasePalette { 
 		get {
@@ -198,10 +196,15 @@ public class RBPaletteGroup : ScriptableObject
 		if (textureImporter == null) {
 			throw new System.NullReferenceException ("Failed to import file at specified path: " + fullPathToFile);
 		}
-		textureImporter.textureType = TextureImporterType.Advanced;
+        var platformSettings = textureImporter.GetDefaultPlatformTextureSettings();
+        platformSettings.resizeAlgorithm = TextureResizeAlgorithm.Bilinear;
+        platformSettings.format = TextureImporterFormat.RGBA32;
+        textureImporter.SetPlatformTextureSettings(platformSettings);
+
+        textureImporter.textureType = TextureImporterType.Default;
 		textureImporter.spriteImportMode = SpriteImportMode.None;
 		textureImporter.filterMode = FilterMode.Point;
-		textureImporter.textureFormat = TextureImporterFormat.RGBA32;
+		//textureImporter.textureFormat = TextureImporterFormat.RGBA32;
 		textureImporter.alphaIsTransparency = false;
 		textureImporter.mipmapEnabled = false;
 		textureImporter.npotScale = TextureImporterNPOTScale.None;

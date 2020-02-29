@@ -1,3 +1,5 @@
+// Upgrade NOTE: replaced 'mul(UNITY_MATRIX_MVP,*)' with 'UnityObjectToClipPos(*)'
+
 // Default Sprite Shader combined with an indexed color texture (Palette)
 Shader "RBTools/Palettized Image/Palette Sprite"
 {
@@ -53,7 +55,7 @@ Shader "RBTools/Palettized Image/Palette Sprite"
 			v2f vert(appdata_t IN)
 			{
 				v2f OUT;
-				OUT.vertex = mul(UNITY_MATRIX_MVP, IN.vertex);
+				OUT.vertex = UnityObjectToClipPos(IN.vertex);
 				OUT.texcoord = IN.texcoord;
 				// Removed the tinting here, since it would tint the palette map
 				OUT.color = IN.color;
